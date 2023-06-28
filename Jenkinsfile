@@ -27,7 +27,7 @@ pipeline {
     stage("Building Docker image") {
       steps {
         script {
-          sh 'docker build -t hemaant07/devops-integration:latest .'
+          sh 'docker build -t hemaant07/devops-integration:$BUILD_NUMBER .'
         }
       }
     }
@@ -45,22 +45,29 @@ steps{
           withCredentials([string(credentialsId: 'docker_pwd', variable: 'docker_password')]) {
             sh 'docker login -u hemaant07 -p ${docker_password}'
           }
-          sh 'docker push hemaant07/devops-integration:latest'
+          sh 'docker push hemaant07/devops-integration:$BUILD_NUMBER'
         }
       }
     }
 
-    stage("Delete Existing K8 Objects") {
-      steps {
-        sh 'kubectl delete deployment spring-boot-k8s-deployment --ignore-not-found=true'
-        sh 'kubectl delete service springboot-k8ssvc --ignore-not-found=true'
-      }
-   }
-
-    stage("Deploy app to Kubernetes Cluster") {
-      steps {
-        sh 'kubectl apply -f deploymentservice.yaml'
-      }
+  stage('Update Deployment File') {
+        environment {
+            GIT_REPO_NAME = "kubernetes-files-for-argo-CD"
+            GIT_USER_NAME = "hemant-1905"
+        }
+        steps {
+            withCredentials([string(credentialsId: 'personal-GitHub-Creds', variable: 'GITHUB_TOKEN')]) {
+                sh '''
+                    git config user.email "hemaant07@gmail.com"
+                    git config user.name "Hemant Sharma"
+                    BUILD_NUMBER=${BUILD_NUMBER}
+                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" kubernetes-files/deploymentservice.yaml
+                    git add  kubernetes-files/deploymentservice.yaml
+                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                '''
+            }
+        }
     }
 
   }
