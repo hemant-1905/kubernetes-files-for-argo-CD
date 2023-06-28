@@ -11,13 +11,13 @@ pipeline {
       }
     }
 
-  //   stage('SonarQube Analysis') {
-  //     steps{
-  //   withSonarQubeEnv(credentialsId: 'sonar-user-credentials', installationName: 'Sonarqube-jenkins') {
-  //     sh 'mvn sonar:sonar'
-  //   }
-  //   }
-  // }
+    stage('SonarQube Analysis') {
+      steps{
+    withSonarQubeEnv(credentialsId: 'sonar-user-credentials', installationName: 'Sonarqube-jenkins') {
+      sh 'mvn sonar:sonar'
+    }
+    }
+  }
 
     stage("building maven build") {     
       steps {
@@ -32,11 +32,11 @@ pipeline {
       }
     }
 
-// stage('Trivy Scan') {
-// steps{
-//        sh 'trivy image --severity CRITICAL --format json --output trivy-scan_results.json hemaant07/devops-integration:latest'
-// } 
-//         }
+stage('Trivy Scan') {
+steps{
+       sh 'trivy image --severity CRITICAL --format json --output trivy-scan_results.json hemaant07/devops-integration:latest'
+} 
+        }
 
 
     stage("Deploy to DockerHub") {
