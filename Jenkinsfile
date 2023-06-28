@@ -7,7 +7,7 @@ pipeline {
 
     stage("Cloning Git Repo") {
       steps {
-        git branch: 'main', credentialsId: 'personal-GitHub-Creds', url: 'https://github.com/hemant-1905/java-app-image-on-Dockerhub.git'
+        git branch: 'main', credentialsId: 'personal-GitHub-Creds', url: 'https://github.com/hemant-1905/kubernetes-files-for-argo-CD.git'
       }
     }
 
