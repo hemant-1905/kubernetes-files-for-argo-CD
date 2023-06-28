@@ -56,7 +56,7 @@ steps{
             GIT_USER_NAME = "hemant-1905"
         }
         steps {
-           // withCredentials([string(credentialsId: '0cd2d1cd-51f4-4ecb-9efc-875ceaff296b', variable: 'GITHUB_TOKEN')]) {
+            withCredentials([string(credentialsId: 'github-connector', variable: 'GITHUB_TOKEN')]) {
                 sh '''
                     git config user.email "hemaant07@gmail.com"
                     git config user.name "Hemant Sharma"
@@ -66,7 +66,7 @@ steps{
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
                 '''
-           // }
+            }
         }
     }
 
