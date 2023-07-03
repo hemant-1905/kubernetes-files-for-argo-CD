@@ -61,7 +61,7 @@ steps{
                     git config user.email "hemaant07@gmail.com"
                     git config user.name "Hemant Sharma"
                     BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i '' -E "s/image: hemaant07\\/devops-integration: .*/image: hemaant07\\/devops-integration:${BUILD_NUMBER}/" kubernetes-files/deploymentservice.yaml
+                    sed -i '' -e "s|image: hemaant07/devops-integration:.*|image: hemaant07/devops-integration:${BUILD_NUMBER}|" kubernetes-files/deploymentservice.yaml
                     git add  kubernetes-files/deploymentservice.yaml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
